@@ -154,6 +154,27 @@
             <artifactId>spring-cloud-sleuth-stream</artifactId>
         </dependency>
     </dependencies>
+    <repositories>
+        <repository>
+            <id>choerodon</id>
+            <name>Nexus choerodon Repository</name>
+            <url>http://114.55.251.46:8081/repository/choerodon</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>thirdparty</id>
+            <name>Nexus thirdparty Repository</name>
+            <url>http://114.55.251.46:8081/repository/thirdparty</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
 
 
 </project>
