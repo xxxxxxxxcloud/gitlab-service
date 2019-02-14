@@ -156,7 +156,7 @@ public class UserController {
      * @param password      密码
      */
     @ApiOperation(value = "根据用户Id修改密码")
-    @PutMapping(value = "/{userId}")
+    @PutMapping(value = "/{userId}/password")
     public ResponseEntity<User> updatePasswordByUserId(
             @ApiParam(value = "用户Id", required = true)
             @PathVariable Integer userId,
