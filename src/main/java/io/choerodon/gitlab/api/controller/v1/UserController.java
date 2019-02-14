@@ -150,6 +150,24 @@ public class UserController {
     }
 
     /**
+     * 根据用户Id修改密码
+     *
+     * @param userId        用户Id
+     * @param password      密码
+     */
+    @ApiOperation(value = "根据用户Id修改密码")
+    @PutMapping(value = "/{userId}")
+    public ResponseEntity<User> updatePasswordByUserId(
+            @ApiParam(value = "用户Id", required = true)
+            @PathVariable Integer userId,
+            @ApiParam(value = "密码", required = true)
+            @RequestParam String password) {
+        return Optional.ofNullable(userService.updatePasswordByUserId(userId, password))
+                .map(target -> new ResponseEntity<>(target, HttpStatus.CREATED))
+                .orElseThrow(() -> new FeignException("error.users.password.update"));
+    }
+
+    /**
      * 根据用户Id禁用用户
      *
      * @param userId 用户Id

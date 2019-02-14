@@ -69,6 +69,14 @@ public interface UserService {
     User updateUserByUserId(Integer userId, User user, Integer projectsLimit);
 
     /**
+     * 根据用户名修改密码
+     *
+     * @param userId     用户Id
+     * @param password   密码
+     */
+    User updatePasswordByUserId(Integer userId, String password);
+
+    /**
      * 创建用户的Aceess_Token
      *
      * @param userId 用户Id

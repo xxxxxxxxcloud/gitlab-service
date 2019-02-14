@@ -98,6 +98,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User updatePasswordByUserId(Integer userId, String password) {
+        UserApi userApi = gitlab4jclient.getGitLabApi().getUserApi();
+        try {
+            User user = new User();
+            user.setId(userId);
+            return userApi.modifyUser(user, password, null);
+        } catch (GitLabApiException e) {
+            throw new FeignException(e.getMessage(), e);
+        }
+    }
+
+    @Override
     public void enabledUserByUserId(Integer userId) {
         UserApi userApi = gitlab4jclient.getGitLabApi().getUserApi();
         try {
