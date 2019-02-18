@@ -2,11 +2,10 @@ package io.choerodon.gitlab.app.service.impl;
 
 import java.util.List;
 
-import org.gitlab4j.api.Constants;
-import org.gitlab4j.api.GitLabApiException;
-import org.gitlab4j.api.UserApi;
+import org.gitlab4j.api.*;
 import org.gitlab4j.api.models.ImpersonationToken;
 import org.gitlab4j.api.models.User;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.choerodon.core.exception.FeignException;
@@ -97,9 +96,13 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Value("${gitlab.url}")
+    private String url;
+
     @Override
     public User updatePasswordByUserId(Integer userId, String password, String token) {
-        UserApi userApi = gitlab4jclient.getGitLabApi(userId, token).getUserApi();
+        GitLabApi gitlabApi = new GitLabApi(GitLabApi.ApiVersion.V4, url, token);
+        UserApi userApi = gitlabApi.getUserApi();
         try {
             User user = new User();
             user.setId(userId);
@@ -107,6 +110,15 @@ public class UserServiceImpl implements UserService {
         } catch (GitLabApiException e) {
             throw new FeignException(e.getMessage(), e);
         }
+
+//        UserApi userApi = gitlab4jclient.getGitLabApi(userId, token).getUserApi();
+//        try {
+//            User user = new User();
+//            user.setId(userId);
+//            return userApi.modifyUser(user, password, null);
+//        } catch (GitLabApiException e) {
+//            throw new FeignException(e.getMessage(), e);
+//        }
     }
 
     @Override
