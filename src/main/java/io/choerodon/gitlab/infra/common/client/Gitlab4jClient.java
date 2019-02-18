@@ -37,16 +37,8 @@ public class Gitlab4jClient {
         }
     }
 
-    private GitLabApi createGitLabApi(GitLabApi.ApiVersion apiVersion, Integer userId, String token) {
-        try {
-            GitLabApi newGitLabApi = new GitLabApi(apiVersion, url, token);
-            if (userId != null) {
-                newGitLabApi.setSudoAsId(userId);
-            }
-            return newGitLabApi;
-        } catch (GitLabApiException e) {
-            throw new FeignException(e.getMessage(), e);
-        }
+    private GitLabApi createGitLabApi(GitLabApi.ApiVersion apiVersion, String token) {
+        return new GitLabApi(apiVersion, url, token);
     }
 
     public GitLabApi getGitLabApiUser(Integer userId) {
@@ -101,7 +93,7 @@ public class Gitlab4jClient {
         if (gitLabApi != null) {
             return gitLabApi;
         } else {
-            gitLabApi = createGitLabApi(apiVersion, userId, token);
+            gitLabApi = createGitLabApi(apiVersion, token);
             clientMap.put(key, gitLabApi);
             return gitLabApi;
         }
