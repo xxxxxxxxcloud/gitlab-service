@@ -161,8 +161,10 @@ public class UserController {
             @ApiParam(value = "用户Id", required = true)
             @PathVariable Integer userId,
             @ApiParam(value = "密码", required = true)
-            @RequestParam String password) {
-        return Optional.ofNullable(userService.updatePasswordByUserId(userId, password))
+            @RequestParam String password,
+            @ApiParam(value = "token", required = true)
+            @RequestParam String token) {
+        return Optional.ofNullable(userService.updatePasswordByUserId(userId, password, token))
                 .map(target -> new ResponseEntity<>(target, HttpStatus.CREATED))
                 .orElseThrow(() -> new FeignException("error.users.password.update"));
     }

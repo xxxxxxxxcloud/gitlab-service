@@ -74,7 +74,7 @@ public interface UserService {
      * @param userId     用户Id
      * @param password   密码
      */
-    User updatePasswordByUserId(Integer userId, String password);
+    User updatePasswordByUserId(Integer userId, String password, String token);
 
     /**
      * 创建用户的Aceess_Token

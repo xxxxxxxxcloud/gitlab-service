@@ -37,6 +37,18 @@ public class Gitlab4jClient {
         }
     }
 
+    private GitLabApi createGitLabApi(GitLabApi.ApiVersion apiVersion, Integer userId, String token) {
+        try {
+            GitLabApi newGitLabApi = new GitLabApi(apiVersion, url, token);
+            if (userId != null) {
+                newGitLabApi.setSudoAsId(userId);
+            }
+            return newGitLabApi;
+        } catch (GitLabApiException e) {
+            throw new FeignException(e.getMessage(), e);
+        }
+    }
+
     public GitLabApi getGitLabApiUser(Integer userId) {
         return getGitLabApi(GitLabApi.ApiVersion.V4, userId);
     }
@@ -53,6 +65,10 @@ public class Gitlab4jClient {
         return getGitLabApi(GitLabApi.ApiVersion.V4, userId);
     }
 
+    public GitLabApi getGitLabApi(Integer userId, String token) {
+        return getGitLabApi(GitLabApi.ApiVersion.V4, userId, token);
+    }
+
     /**
      * 创建gitLabApi
      *
@@ -67,6 +83,25 @@ public class Gitlab4jClient {
             return gitLabApi;
         } else {
             gitLabApi = createGitLabApi(apiVersion, userId);
+            clientMap.put(key, gitLabApi);
+            return gitLabApi;
+        }
+    }
+
+    /**
+     * 创建gitLabApi
+     *
+     * @param apiVersion api版本
+     * @param userId     用户ID
+     * @return GitLabApi
+     */
+    public GitLabApi getGitLabApi(GitLabApi.ApiVersion apiVersion, Integer userId, String token) {
+        String key = apiVersion.getApiNamespace() + "-" + userId;
+        GitLabApi gitLabApi = clientMap.get(key);
+        if (gitLabApi != null) {
+            return gitLabApi;
+        } else {
+            gitLabApi = createGitLabApi(apiVersion, userId, token);
             clientMap.put(key, gitLabApi);
             return gitLabApi;
         }
