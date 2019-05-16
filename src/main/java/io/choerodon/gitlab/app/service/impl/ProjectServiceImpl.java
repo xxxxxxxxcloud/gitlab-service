@@ -3,6 +3,7 @@ package io.choerodon.gitlab.app.service.impl;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gson.Gson;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.*;
@@ -25,7 +26,7 @@ public class ProjectServiceImpl implements ProjectService {
     public ProjectServiceImpl(Gitlab4jClient gitlab4jclient) {
         this.gitlab4jclient = gitlab4jclient;
     }
-
+    Gson gson =  new Gson();
 
     @Override
     public Project createProject(Integer groupId, String projectName, Integer userId, boolean visibility) {
@@ -79,11 +80,24 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    public Project getProjectById(Integer projectId) {
+        try {
+            return gitlab4jclient.getGitLabApi().getProjectApi().getProject(projectId);
+        } catch (GitLabApiException e) {
+            throw new FeignException(e.getMessage(), e);
+        }
+    }
+
+    @Override
     public Project getProject(Integer userId, String groupCode, String projectCode) {
         try {
             return gitlab4jclient.getGitLabApi(userId).getProjectApi().getProject(groupCode, projectCode);
         } catch (GitLabApiException e) {
-            throw new CommonException(e.getMessage(), e);
+            if ("404 Project Not Found".equals(e.getMessage())) {
+                return new Project();
+            } else {
+               throw new FeignException(e.getMessage(),e);
+            }
         }
     }
 
@@ -205,6 +219,24 @@ public class ProjectServiceImpl implements ProjectService {
             Member member = new Member();
             member.setAccessLevel(AccessLevel.NONE);
             return member;
+        }
+    }
+
+    @Override
+    public List<Member> getAllMemberByProjectId(Integer projectId) {
+        try {
+            return gitlab4jclient.getGitLabApi().getProjectApi().getMembers(projectId);
+        } catch (GitLabApiException e) {
+            throw new FeignException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public List<Project> getMemberProjects(Integer userId) {
+        try {
+            return gitlab4jclient.getGitLabApi(userId).getProjectApi().getMemberProjects();
+        } catch (GitLabApiException e) {
+            throw new FeignException(e.getMessage(), e);
         }
     }
 }
